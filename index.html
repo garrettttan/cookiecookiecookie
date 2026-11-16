@@ -449,7 +449,7 @@
 
       <div class="actions">
         <button class="primary" type="submit" id="saveBtn">Add to the list</button>
-        <button class="danger" type="button" id="deleteBtn" hidden>Delete this entry</button>
+        <button class="danger" type="button" id="deleteBtn" hidden>Delete</button>
       </div>
     </form>
   </dialog>
@@ -776,7 +776,7 @@
       deleteArmed = false;
       clearTimeout(deleteTimer);
       $("deleteBtn").classList.remove("confirm");
-      $("deleteBtn").textContent = "Delete this cookie";
+      $("deleteBtn").textContent = "Delete";
     }
 
     async function save(ev) {
