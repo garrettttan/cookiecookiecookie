@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cookie Exchange 2026</title>
+  <meta name="description" content="Who's bringing what to the Cookie Exchange 2026.">
+  <meta name="theme-color" content="#f7f1e8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16120f" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f1e8;
+      --surface: #fffdf9;
+      --surface-2: #f1e8da;
+      --text: #2a1f18;
+      --muted: #7a6a5c;
+      --line: #e6dac8;
+      --accent: #b3263a;        /* cranberry */
+      --accent-text: #ffffff;
+      --accent-soft: #f8e3e4;
+      --green: #2f5d46;         /* pine */
+      --green-soft: #e1ece4;
+      --chip: #f3ead9;
+      --chip-text: #5b4636;
+      --chip-on: #2f5d46;
+      --chip-on-text: #ffffff;
+      --warn-bg: #fff3d6;
+      --warn-text: #7a5300;
+      --shadow: 0 1px 2px rgba(60, 35, 15, .06), 0 4px 16px rgba(60, 35, 15, .06);
+      --radius: 18px;
+      --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #16120f;
+        --surface: #221b16;
+        --surface-2: #2b231c;
+        --text: #f3ebe1;
+        --muted: #b3a393;
+        --line: #3a3027;
+        --accent: #e0566a;
+        --accent-text: #1a0d0f;
+        --accent-soft: #3b1f23;
+        --green: #7fbf9b;
+        --green-soft: #1f3128;
+        --chip: #30271f;
+        --chip-text: #e2d4c4;
+        --chip-on: #7fbf9b;
+        --chip-on-text: #10201a;
+        --warn-bg: #3a2e12;
+        --warn-text: #f3d68c;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+        color-scheme: dark;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 max(16px, env(safe-area-inset-right)) calc(110px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    }
+
+    /* Header */
+    header {
+      padding: calc(28px + env(safe-area-inset-top)) 0 18px;
+      text-align: center;
+    }
+    .sprinkles {
+      font-size: 13px;
+      letter-spacing: .35em;
+      color: var(--accent);
+      user-select: none;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(34px, 10vw, 48px);
+      line-height: 1.02;
+      margin: 8px 0 10px;
+      letter-spacing: -0.02em;
+    }
+    h1 .yr { color: var(--accent); }
+    .count {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-weight: 600;
+      font-size: 15px;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+
+    /* Tools */
+    .tools { margin: 14px 0 6px; display: grid; gap: 10px; }
+    .search {
+      position: relative;
+    }
+    .search input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px 0 44px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      font-size: 16px;
+      outline: none;
+    }
+    .search input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+    .search svg {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 20px; height: 20px; color: var(--muted);
+    }
+    .filter-toggle {
+      justify-self: start;
+      background: none;
+      border: 0;
+      padding: 6px 2px;
+      color: var(--green);
+      font-weight: 600;
+      font-size: 15px;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .filter-toggle .n {
+      background: var(--green); color: var(--chip-on-text);
+      border-radius: 999px; font-size: 12px; padding: 1px 8px;
+    }
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .filter-panel p { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+    .filter-panel .clear {
+      margin-top: 10px; background: none; border: 0; padding: 4px 0;
+      color: var(--accent); font-weight: 600; font-size: 14px;
+    }
+
+    /* Chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      border: 1px solid transparent;
+      background: var(--chip);
+      color: var(--chip-text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 15px;
+      min-height: 40px;
+      line-height: 1.2;
+      transition: background .15s, color .15s, transform .1s;
+    }
+    .chip:active { transform: scale(.96); }
+    .chip[aria-pressed="true"] {
+      background: var(--chip-on);
+      color: var(--chip-on-text);
+    }
+    .chip[aria-pressed="true"]::before { content: "✓ "; }
+    .filter-panel .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
+    .filter-panel .chip[aria-pressed="true"]::before { content: "✕ "; }
+
+    /* List */
+    .status { text-align: center; color: var(--muted); padding: 40px 12px; }
+    .status .big { font-size: 44px; display: block; margin-bottom: 6px; }
+    .list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 12px; }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 12px;
+    }
+    .card.new { animation: pop .3s ease-out; }
+    @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .card h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 21px;
+      line-height: 1.2;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    .card .who { color: var(--muted); font-size: 15px; margin: 0; overflow-wrap: anywhere; }
+    .card .edit {
+      grid-row: 1 / span 2; grid-column: 2;
+      align-self: start;
+      border: 1px solid var(--line);
+      background: transparent;
+      border-radius: 999px;
+      height: 40px; padding: 0 14px;
+      font-size: 14px; font-weight: 600;
+      color: var(--text);
+    }
+    .card .tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag {
+      font-size: 13px; line-height: 1;
+      padding: 6px 10px; border-radius: 999px;
+      background: var(--accent-soft); color: var(--accent);
+      font-weight: 600;
+    }
+    .tag.none { background: var(--green-soft); color: var(--green); }
+
+    /* Floating add button */
+    .fab {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      background: var(--accent);
+      color: var(--accent-text);
+      border: 0;
+      border-radius: 999px;
+      height: 56px;
+      padding: 0 26px;
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(179, 38, 58, .35);
+      display: inline-flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .fab:active { transform: translateX(-50%) scale(.97); }
+
+    /* Bottom sheet */
+    dialog.sheet {
+      border: 0;
+      padding: 0;
+      margin: auto auto 0;
+      width: 100%;
+      max-width: 640px;
+      max-height: 92dvh;
+      border-radius: 24px 24px 0 0;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, .2);
+    }
+    dialog.sheet[open] { animation: up .22s ease-out; }
+    @keyframes up { from { transform: translateY(40px); opacity: .4; } to { transform: none; opacity: 1; } }
+    dialog.sheet::backdrop { background: rgba(20, 12, 8, .45); }
+    @media (min-width: 700px) {
+      dialog.sheet { margin: auto; border-radius: 24px; }
+    }
+    .sheet form {
+      display: grid; gap: 18px;
+      padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
+    }
+    .grabber { width: 40px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto; }
+    .sheet-head { display: flex; align-items: center; justify-content: space-between; }
+    .sheet-head h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin: 0; }
+    .x {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 0; background: var(--surface-2); font-size: 20px; line-height: 1;
+    }
+    label.field { display: grid; gap: 6px; font-weight: 600; font-size: 15px; }
+    .field input, .custom-row input {
+      height: 50px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      padding: 0 14px;
+      font-size: 16px; /* prevents iOS zoom */
+      font-weight: 400;
+      outline: none;
+      width: 100%;
+    }
+    .field input:focus, .custom-row input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+    fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+    legend { font-weight: 600; font-size: 15px; padding: 0; margin-bottom: 4px; }
+    .hint { color: var(--muted); font-size: 14px; font-weight: 400; margin: 0 0 10px; }
+    .dupe {
+      background: var(--warn-bg); color: var(--warn-text);
+      border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 500;
+    }
+    .custom-row { display: flex; gap: 8px; margin-top: 12px; }
+    .custom-row button {
+      flex: none; height: 50px; padding: 0 16px; border-radius: 12px;
+      border: 1px solid var(--green); background: transparent; color: var(--green); font-weight: 700;
+    }
+    .actions { display: grid; gap: 10px; margin-top: 4px; }
+    .primary {
+      height: 54px; border-radius: 14px; border: 0;
+      background: var(--accent); color: var(--accent-text);
+      font-size: 17px; font-weight: 700;
+    }
+    .primary:disabled { opacity: .6; }
+    .danger {
+      height: 48px; border-radius: 14px;
+      border: 1px solid var(--line); background: transparent;
+      color: var(--accent); font-weight: 600;
+    }
+    .danger.confirm { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    .form-error { color: var(--accent); font-size: 14px; font-weight: 600; margin: 0; }
+
+    /* Toast */
+    .toast {
+      position: fixed; left: 50%; transform: translate(-50%, 20px);
+      bottom: calc(90px + env(safe-area-inset-bottom));
+      background: var(--text); color: var(--bg);
+      padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 600;
+      opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+      z-index: 20; max-width: calc(100% - 32px); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .visually-hidden {
+      position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="sprinkles" aria-hidden="true">✦ ❄ ✦ ❄ ✦</div>
+      <h1>Cookie Exchange <span class="yr">2026</span></h1>
+      <span class="count" id="count" aria-live="polite">🍪 Loading…</span>
+    </header>
+
+    <section class="tools" aria-label="Find cookies">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="visually-hidden" for="q">Search by cookie or name</label>
+        <input id="q" type="search" placeholder="Search cookies or names" autocomplete="off" enterkeyhint="search">
+      </div>
+      <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">
+        Avoid allergens <span class="n" id="filterCount" hidden></span> <span aria-hidden="true" id="filterCaret">▾</span>
+      </button>
+      <div class="filter-panel" id="filterPanel" hidden>
+        <p>Hide cookies that contain:</p>
+        <div class="chips" id="filterChips"></div>
+        <button class="clear" id="clearFilter" type="button" hidden>Clear filter</button>
+      </div>
+    </section>
+
+    <div class="status" id="status"><span class="big">🍪</span>Loading the cookie list…</div>
+    <ul class="list" id="list"></ul>
+  </div>
+
+  <button class="fab" id="addBtn" type="button"><span aria-hidden="true">＋</span> Add your cookie</button>
+
+  <dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+    <form id="form" novalidate>
+      <div class="grabber" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <h2 id="sheetTitle">Add your cookie</h2>
+        <button class="x" type="button" id="closeBtn" aria-label="Close">×</button>
+      </div>
+
+      <label class="field">Your name
+        <input id="fName" name="name" required maxlength="80" autocomplete="name" autocapitalize="words" enterkeyhint="next">
+      </label>
+
+      <label class="field">Your cookie
+        <input id="fCookie" name="cookie" required maxlength="120" autocapitalize="words" placeholder="e.g. Brown butter snickerdoodles" enterkeyhint="done">
+      </label>
+      <div class="dupe" id="dupe" hidden></div>
+
+      <fieldset>
+        <legend>Contains</legend>
+        <p class="hint">Tap everything your cookie contains. Leave blank if none.</p>
+        <div class="chips" id="allergenChips"></div>
+        <div class="custom-row">
+          <label class="visually-hidden" for="fCustom">Other allergen</label>
+          <input id="fCustom" maxlength="40" placeholder="Something else? e.g. oats" autocapitalize="sentences" enterkeyhint="done">
+          <button type="button" id="addCustom">Add</button>
+        </div>
+      </fieldset>
+
+      <p class="form-error" id="formError" hidden></p>
+
+      <div class="actions">
+        <button class="primary" type="submit" id="saveBtn">Add to the list</button>
+        <button class="danger" type="button" id="deleteBtn" hidden>Delete this cookie</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script>
+    // Publishable key: safe to expose; access is governed by row-level security.
+    const SUPABASE_URL = "https://zhwtgahrpnlywjaqmhjt.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_d_we7LacUwrG62LXVT9KZw_eWJl-iLI";
+    const TABLE = "cookie_exchange_entries";
+
+    const ALLERGENS = [
+      "Gluten", "Dairy", "Eggs", "Walnuts", "Pecans", "Almonds", "Macadamia nuts",
+      "Hazelnuts", "Pistachios", "Peanuts", "Cashews", "Soy", "Sesame", "Coconut"
+    ];
+
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const $ = (id) => document.getElementById(id);
+    const norm = (s) => s.trim().toLowerCase().replace(/\s+/g, " ");
+
+    let entries = [];
+    let editing = null;            // entry being edited, or null when adding
+    let selected = [];             // allergens chosen in the form (display labels)
+    let avoid = new Set();         // normalized allergens to hide in the list
+    let seenIds = null;            // ids already shown, so only new cards animate
+
+    // ---------- Data ----------
+    async function load() {
+      const { data, error } = await db.from(TABLE).select("*").order("created_at", { ascending: true });
+      if (error) {
+        if (!entries.length) {
+          $("status").hidden = false;
+          $("status").innerHTML = '<span class="big">😬</span>Couldn\'t load the list. Pull down to refresh or try again in a moment.';
+          $("count").textContent = "🍪 Offline";
+        }
+        return;
+      }
+      entries = data;
+      render();
+    }
+
+    let reloadTimer;
+    function scheduleReload() {
+      clearTimeout(reloadTimer);
+      reloadTimer = setTimeout(load, 150);
+    }
+
+    db.channel("cookie-exchange")
+      .on("postgres_changes", { event: "*", schema: "public", table: TABLE }, scheduleReload)
+      .subscribe();
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+
+    // ---------- Rendering ----------
+    function allAllergenLabels() {
+      const seen = new Map(ALLERGENS.map((a) => [norm(a), a]));
+      for (const e of entries) for (const a of e.allergens || []) if (!seen.has(norm(a))) seen.set(norm(a), a);
+      return [...seen.values()];
+    }
+
+    function render() {
+      const n = entries.length;
+      $("count").textContent = n === 0 ? "🍪 No cookies yet" : `🍪 ${n} ${n === 1 ? "cookie" : "cookies"} so far`;
+
+      const q = norm($("q").value);
+      const shown = entries.filter((e) => {
+        if (q && !norm(e.cookie).includes(q) && !norm(e.name).includes(q)) return false;
+        if (avoid.size && (e.allergens || []).some((a) => avoid.has(norm(a)))) return false;
+        return true;
+      });
+
+      const list = $("list");
+      list.replaceChildren(...shown.map((e) => {
+        const li = cardFor(e);
+        if (seenIds && !seenIds.has(e.id)) li.classList.add("new");
+        return li;
+      }));
+      seenIds = new Set(entries.map((e) => e.id));
+
+      const status = $("status");
+      if (n === 0) {
+        status.hidden = false;
+        status.innerHTML = '<span class="big">🥣</span>The cookie tin is empty.<br>Be the first to add yours!';
+      } else if (!shown.length) {
+        status.hidden = false;
+        status.innerHTML = '<span class="big">🔍</span>No cookies match.';
+      } else {
+        status.hidden = true;
+      }
+      renderFilterChips();
+    }
+
+    function cardFor(e) {
+      const li = document.createElement("li");
+      li.className = "card";
+      const h = document.createElement("h2");
+      h.textContent = e.cookie;
+      const who = document.createElement("p");
+      who.className = "who";
+      who.textContent = `from ${e.name}`;
+      const btn = document.createElement("button");
+      btn.className = "edit";
+      btn.type = "button";
+      btn.textContent = "Edit";
+      btn.setAttribute("aria-label", `Edit ${e.cookie} from ${e.name}`);
+      btn.addEventListener("click", () => openSheet(e));
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      const al = e.allergens || [];
+      if (!al.length) {
+        const t = document.createElement("span");
+        t.className = "tag none";
+        t.textContent = "No listed allergens";
+        tags.append(t);
+      } else {
+        for (const a of al) {
+          const t = document.createElement("span");
+          t.className = "tag";
+          t.textContent = a;
+          tags.append(t);
+        }
+      }
+      li.append(h, btn, who, tags);
+      return li;
+    }
+
+    function chip(label, pressed, onToggle) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = label;
+      b.setAttribute("aria-pressed", String(pressed));
+      b.addEventListener("click", () => {
+        const now = b.getAttribute("aria-pressed") !== "true";
+        b.setAttribute("aria-pressed", String(now));
+        onToggle(now);
+      });
+      return b;
+    }
+
+    function renderFilterChips() {
+      const box = $("filterChips");
+      box.replaceChildren(...allAllergenLabels().map((a) =>
+        chip(a, avoid.has(norm(a)), (on) => {
+          on ? avoid.add(norm(a)) : avoid.delete(norm(a));
+          render();
+        })
+      ));
+      $("filterCount").hidden = !avoid.size;
+      $("filterCount").textContent = avoid.size;
+      $("clearFilter").hidden = !avoid.size;
+    }
+
+    function renderFormChips() {
+      const labels = [...ALLERGENS];
+      for (const a of selected) if (!labels.some((l) => norm(l) === norm(a))) labels.push(a);
+      $("allergenChips").replaceChildren(...labels.map((a) =>
+        chip(a, selected.some((s) => norm(s) === norm(a)), (on) => {
+          selected = on ? [...selected, a] : selected.filter((s) => norm(s) !== norm(a));
+        })
+      ));
+    }
+
+    // ---------- Sheet ----------
+    function openSheet(entry = null) {
+      editing = entry;
+      $("sheetTitle").textContent = entry ? "Edit cookie" : "Add your cookie";
+      $("saveBtn").textContent = entry ? "Save changes" : "Add to the list";
+      $("fName").value = entry ? entry.name : "";
+      $("fCookie").value = entry ? entry.cookie : "";
+      $("fCustom").value = "";
+      selected = entry ? [...(entry.allergens || [])] : [];
+      $("deleteBtn").hidden = !entry;
+      resetDelete();
+      $("formError").hidden = true;
+      $("saveBtn").disabled = false;
+      renderFormChips();
+      checkDupe();
+      $("sheet").showModal();
+      if (!entry) setTimeout(() => $("fName").focus(), 50);
+    }
+
+    function closeSheet() { $("sheet").close(); }
+
+    function addCustom() {
+      const v = $("fCustom").value.trim().replace(/\s+/g, " ").slice(0, 40);
+      if (!v) return;
+      const known = [...ALLERGENS, ...selected].find((l) => norm(l) === norm(v));
+      const label = known || v.charAt(0).toUpperCase() + v.slice(1);
+      if (!selected.some((s) => norm(s) === norm(label))) selected.push(label);
+      $("fCustom").value = "";
+      renderFormChips();
+    }
+
+    function checkDupe() {
+      const c = norm($("fCookie").value);
+      const match = c && entries.find((e) => (!editing || e.id !== editing.id) && norm(e.cookie) === c);
+      $("dupe").hidden = !match;
+      if (match) $("dupe").textContent = `Heads up: ${match.name} is already bringing ${match.cookie}. Totally fine, just so you know!`;
+    }
+
+    let deleteArmed = false, deleteTimer;
+    function resetDelete() {
+      deleteArmed = false;
+      clearTimeout(deleteTimer);
+      $("deleteBtn").classList.remove("confirm");
+      $("deleteBtn").textContent = "Delete this cookie";
+    }
+
+    async function save(ev) {
+      ev.preventDefault();
+      if ($("fCustom").value.trim()) addCustom();
+      const name = $("fName").value.trim();
+      const cookie = $("fCookie").value.trim();
+      if (!name || !cookie) {
+        showError(!name ? "Please add your name." : "Please add your cookie.");
+        (!name ? $("fName") : $("fCookie")).focus();
+        return;
+      }
+      $("saveBtn").disabled = true;
+      const row = { name, cookie, allergens: selected };
+      const { error } = editing
+        ? await db.from(TABLE).update({ ...row, updated_at: new Date().toISOString() }).eq("id", editing.id)
+        : await db.from(TABLE).insert(row);
+      $("saveBtn").disabled = false;
+      if (error) { showError("Couldn't save. Check your connection and try again."); return; }
+      const wasEditing = !!editing;
+      closeSheet();
+      toast(wasEditing ? "Saved ✓" : "You're on the list! 🍪");
+      load();
+    }
+
+    async function del() {
+      if (!deleteArmed) {
+        deleteArmed = true;
+        $("deleteBtn").classList.add("confirm");
+        $("deleteBtn").textContent = "Tap again to delete";
+        deleteTimer = setTimeout(resetDelete, 4000);
+        return;
+      }
+      resetDelete();
+      const { error } = await db.from(TABLE).delete().eq("id", editing.id);
+      if (error) { showError("Couldn't delete. Try again."); return; }
+      closeSheet();
+      toast("Deleted");
+      load();
+    }
+
+    function showError(msg) { $("formError").textContent = msg; $("formError").hidden = false; }
+
+    let toastTimer;
+    function toast(msg) {
+      $("toast").textContent = msg;
+      $("toast").classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2200);
+    }
+
+    // ---------- Wiring ----------
+    $("addBtn").addEventListener("click", () => openSheet());
+    $("closeBtn").addEventListener("click", closeSheet);
+    $("sheet").addEventListener("click", (e) => { if (e.target === $("sheet")) closeSheet(); });
+    $("form").addEventListener("submit", save);
+    $("deleteBtn").addEventListener("click", del);
+    $("addCustom").addEventListener("click", addCustom);
+    $("fCustom").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } });
+    $("fName").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("fCookie").focus(); } });
+    $("fCookie").addEventListener("input", checkDupe);
+    $("q").addEventListener("input", render);
+    $("filterToggle").addEventListener("click", () => {
+      const open = $("filterPanel").hidden;
+      $("filterPanel").hidden = !open;
+      $("filterToggle").setAttribute("aria-expanded", String(open));
+      $("filterCaret").textContent = open ? "▴" : "▾";
+    });
+    $("clearFilter").addEventListener("click", () => { avoid.clear(); render(); });
+
+    load();
+  </script>
+</body>
+</html>
