@@ -312,6 +312,16 @@
     .seg span b { font-size: 24px; line-height: 1.1; font-weight: 400; }
     .seg input:checked + span { background: var(--green-soft); border-color: var(--green); color: var(--green); }
     .seg input:focus-visible + span { box-shadow: 0 0 0 3px var(--green-soft); }
+    .homemade {
+      background: var(--green-soft); color: var(--text);
+      border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.45;
+      margin-top: 10px;
+    }
+    .homemade strong { color: var(--green); }
+    .homemade button {
+      background: none; border: 0; padding: 0; font: inherit; font-weight: 600;
+      color: var(--green); text-decoration: underline; text-underline-offset: 2px;
+    }
     .hint { color: var(--muted); font-size: 14px; font-weight: 400; margin: 0 0 10px; }
     .dupe {
       background: var(--warn-bg); color: var(--warn-text);
@@ -404,6 +414,11 @@
           <label><input type="radio" name="kind" value="drink"><span><b aria-hidden="true">🥤</b>Drink</span></label>
           <label><input type="radio" name="kind" value="other"><span><b aria-hidden="true">🎁</b>Something else</span></label>
         </div>
+        <p class="homemade" id="homemade" hidden>
+          🧑‍🍳 <strong>Homemade cookies only, please.</strong> Not baking this year? You're still welcome to join in by bringing
+          <button type="button" data-kind="drink">a drink</button> or
+          <button type="button" data-kind="other">something else</button>.
+        </p>
       </fieldset>
 
       <label class="field"><span id="itemLabel">Your cookie</span>
@@ -644,6 +659,7 @@
       for (const r of document.querySelectorAll('#kindSeg input')) r.checked = r.value === k;
       $("itemLabel").textContent = KINDS[k].label;
       $("fCookie").placeholder = KINDS[k].ph;
+      $("homemade").hidden = k !== "cookie";
       checkDupe();
     }
 
@@ -734,6 +750,10 @@
     $("fName").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("fCookie").focus(); } });
     $("fCookie").addEventListener("input", checkDupe);
     $("kindSeg").addEventListener("change", (e) => setKind(e.target.value));
+    $("homemade").addEventListener("click", (e) => {
+      const k = e.target.closest("button")?.dataset.kind;
+      if (k) { setKind(k); $("fCookie").focus(); }
+    });
     $("q").addEventListener("input", render);
     $("filterToggle").addEventListener("click", () => {
       const open = $("filterPanel").hidden;
