@@ -1,6 +1,6 @@
 # 🍪 Cookie Exchange 2026
 
-A tiny, phone-friendly page for tracking who's bringing which cookie (and what allergens it contains).
+A tiny, phone-friendly page for tracking who's bringing which cookie, drink or other item (and what allergens it contains).
 
 - **Frontend:** `index.html`, a single static file with no build step, hosted on GitHub Pages.
 - **Data:** one Supabase table, `public.cookie_exchange_entries`, in the Fantasy Survivor project.
@@ -19,6 +19,7 @@ A tiny, phone-friendly page for tracking who's bringing which cookie (and what a
 - **Allergen choices:** edit the `ALLERGENS` list near the top of the `<script>` in `index.html`.
   People can also add their own using the "Something else?" field.
 - **Title:** search `index.html` for `Cookie Exchange`.
+- **Item types:** the `KINDS` list in `index.html` (cookie, drink, other). Adding a new type also needs the `kind` check constraint on the table updated.
 
 ## Cleaning up after the event
 

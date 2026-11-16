@@ -184,7 +184,15 @@
     /* List */
     .status { text-align: center; color: var(--muted); padding: 40px 12px; }
     .status .big { font-size: 44px; display: block; margin-bottom: 6px; }
-    .list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 12px; }
+    .section h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 20px;
+      margin: 22px 4px 10px;
+      display: flex; align-items: baseline; gap: 8px;
+    }
+    .section h2 .n { font-family: var(--font-body); font-size: 15px; font-weight: 600; color: var(--muted); }
+    .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
     .card {
       background: var(--surface);
       border-radius: var(--radius);
@@ -196,7 +204,7 @@
     }
     .card.new { animation: pop .3s ease-out; }
     @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-    .card h2 {
+    .card h3 {
       font-family: var(--font-display);
       font-weight: 600;
       font-size: 21px;
@@ -290,6 +298,20 @@
     .field input:focus, .custom-row input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
     fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
     legend { font-weight: 600; font-size: 15px; padding: 0; margin-bottom: 4px; }
+    .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+    .seg label { position: relative; display: grid; }
+    .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; pointer-events: none; }
+    .seg span {
+      display: grid; justify-items: center; gap: 2px;
+      padding: 10px 4px; border-radius: 14px;
+      background: var(--chip); color: var(--chip-text);
+      border: 2px solid transparent;
+      font-size: 14px; font-weight: 600; text-align: center; line-height: 1.2;
+      cursor: pointer; transition: background .15s, border-color .15s;
+    }
+    .seg span b { font-size: 24px; line-height: 1.1; font-weight: 400; }
+    .seg input:checked + span { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+    .seg input:focus-visible + span { box-shadow: 0 0 0 3px var(--green-soft); }
     .hint { color: var(--muted); font-size: 14px; font-weight: 400; margin: 0 0 10px; }
     .dupe {
       background: var(--warn-bg); color: var(--warn-text);
@@ -341,33 +363,33 @@
       <span class="count" id="count" aria-live="polite">🍪 Loading…</span>
     </header>
 
-    <section class="tools" aria-label="Find cookies">
+    <section class="tools" aria-label="Search and filter">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <label class="visually-hidden" for="q">Search by cookie or name</label>
-        <input id="q" type="search" placeholder="Search cookies or names" autocomplete="off" enterkeyhint="search">
+        <label class="visually-hidden" for="q">Search by item or name</label>
+        <input id="q" type="search" placeholder="Search items or names" autocomplete="off" enterkeyhint="search">
       </div>
       <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">
         Avoid allergens <span class="n" id="filterCount" hidden></span> <span aria-hidden="true" id="filterCaret">▾</span>
       </button>
       <div class="filter-panel" id="filterPanel" hidden>
-        <p>Hide cookies that contain:</p>
+        <p>Hide anything that contains:</p>
         <div class="chips" id="filterChips"></div>
         <button class="clear" id="clearFilter" type="button" hidden>Clear filter</button>
       </div>
     </section>
 
-    <div class="status" id="status"><span class="big">🍪</span>Loading the cookie list…</div>
-    <ul class="list" id="list"></ul>
+    <div class="status" id="status"><span class="big">🍪</span>Loading the list…</div>
+    <div id="list"></div>
   </div>
 
-  <button class="fab" id="addBtn" type="button"><span aria-hidden="true">＋</span> Add your cookie</button>
+  <button class="fab" id="addBtn" type="button"><span aria-hidden="true">＋</span> Add what you're bringing</button>
 
   <dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
     <form id="form" novalidate>
       <div class="grabber" aria-hidden="true"></div>
       <div class="sheet-head">
-        <h2 id="sheetTitle">Add your cookie</h2>
+        <h2 id="sheetTitle">What are you bringing?</h2>
         <button class="x" type="button" id="closeBtn" aria-label="Close">×</button>
       </div>
 
@@ -375,14 +397,23 @@
         <input id="fName" name="name" required maxlength="80" autocomplete="name" autocapitalize="words" enterkeyhint="next">
       </label>
 
-      <label class="field">Your cookie
+      <fieldset>
+        <legend>I'm bringing</legend>
+        <div class="seg" id="kindSeg">
+          <label><input type="radio" name="kind" value="cookie"><span><b aria-hidden="true">🍪</b>Cookie</span></label>
+          <label><input type="radio" name="kind" value="drink"><span><b aria-hidden="true">🥤</b>Drink</span></label>
+          <label><input type="radio" name="kind" value="other"><span><b aria-hidden="true">🎁</b>Something else</span></label>
+        </div>
+      </fieldset>
+
+      <label class="field"><span id="itemLabel">Your cookie</span>
         <input id="fCookie" name="cookie" required maxlength="120" autocapitalize="words" placeholder="e.g. Brown butter snickerdoodles" enterkeyhint="done">
       </label>
       <div class="dupe" id="dupe" hidden></div>
 
       <fieldset>
         <legend>Contains</legend>
-        <p class="hint">Tap everything your cookie contains. Leave blank if none.</p>
+        <p class="hint">Tap everything it contains. Leave blank if none.</p>
         <div class="chips" id="allergenChips"></div>
         <div class="custom-row">
           <label class="visually-hidden" for="fCustom">Other allergen</label>
@@ -395,7 +426,7 @@
 
       <div class="actions">
         <button class="primary" type="submit" id="saveBtn">Add to the list</button>
-        <button class="danger" type="button" id="deleteBtn" hidden>Delete this cookie</button>
+        <button class="danger" type="button" id="deleteBtn" hidden>Delete this entry</button>
       </div>
     </form>
   </dialog>
@@ -414,6 +445,13 @@
       "Hazelnuts", "Pistachios", "Peanuts", "Cashews", "Soy", "Sesame", "Coconut"
     ];
 
+    const KINDS = {
+      cookie: { emoji: "🍪", one: "cookie", many: "cookies", section: "Cookies", label: "Your cookie", ph: "e.g. Brown butter snickerdoodles" },
+      drink:  { emoji: "🥤", one: "drink",  many: "drinks",  section: "Drinks",  label: "Your drink",  ph: "e.g. Mulled wine" },
+      other:  { emoji: "🎁", one: "other",  many: "other",   section: "Other",   label: "What you're bringing", ph: "e.g. Cheese plate" },
+    };
+    const kindOf = (e) => (KINDS[e.kind] ? e.kind : "cookie");
+
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const $ = (id) => document.getElementById(id);
     const norm = (s) => s.trim().toLowerCase().replace(/\s+/g, " ");
@@ -421,6 +459,7 @@
     let entries = [];
     let editing = null;            // entry being edited, or null when adding
     let selected = [];             // allergens chosen in the form (display labels)
+    let currentKind = "cookie";    // type chosen in the form
     let avoid = new Set();         // normalized allergens to hide in the list
     let seenIds = null;            // ids already shown, so only new cards animate
 
@@ -459,7 +498,11 @@
 
     function render() {
       const n = entries.length;
-      $("count").textContent = n === 0 ? "🍪 No cookies yet" : `🍪 ${n} ${n === 1 ? "cookie" : "cookies"} so far`;
+      const counts = Object.keys(KINDS)
+        .map((k) => [k, entries.filter((e) => kindOf(e) === k).length])
+        .filter(([, c]) => c > 0)
+        .map(([k, c]) => `${KINDS[k].emoji} ${c} ${c === 1 ? KINDS[k].one : KINDS[k].many}`);
+      $("count").textContent = n === 0 ? "🍪 No cookies yet" : counts.join(" · ");
 
       const q = norm($("q").value);
       const shown = entries.filter((e) => {
@@ -468,21 +511,38 @@
         return true;
       });
 
-      const list = $("list");
-      list.replaceChildren(...shown.map((e) => {
-        const li = cardFor(e);
-        if (seenIds && !seenIds.has(e.id)) li.classList.add("new");
-        return li;
-      }));
+      const sections = Object.keys(KINDS).map((k) => {
+        const items = shown.filter((e) => kindOf(e) === k);
+        if (!items.length) return null;
+        const sec = document.createElement("section");
+        sec.className = "section";
+        sec.dataset.kind = k;
+        const h = document.createElement("h2");
+        h.textContent = `${KINDS[k].emoji} ${KINDS[k].section} `;
+        const c = document.createElement("span");
+        c.className = "n";
+        c.textContent = items.length;
+        h.append(c);
+        const ul = document.createElement("ul");
+        ul.className = "list";
+        ul.append(...items.map((e) => {
+          const li = cardFor(e);
+          if (seenIds && !seenIds.has(e.id)) li.classList.add("new");
+          return li;
+        }));
+        sec.append(h, ul);
+        return sec;
+      }).filter(Boolean);
+      $("list").replaceChildren(...sections);
       seenIds = new Set(entries.map((e) => e.id));
 
       const status = $("status");
       if (n === 0) {
         status.hidden = false;
-        status.innerHTML = '<span class="big">🥣</span>The cookie tin is empty.<br>Be the first to add yours!';
+        status.innerHTML = '<span class="big">🥣</span>Nothing on the list yet.<br>Be the first to sign up!';
       } else if (!shown.length) {
         status.hidden = false;
-        status.innerHTML = '<span class="big">🔍</span>No cookies match.';
+        status.innerHTML = '<span class="big">🔍</span>Nothing matches.';
       } else {
         status.hidden = true;
       }
@@ -492,7 +552,7 @@
     function cardFor(e) {
       const li = document.createElement("li");
       li.className = "card";
-      const h = document.createElement("h2");
+      const h = document.createElement("h3");
       h.textContent = e.cookie;
       const who = document.createElement("p");
       who.className = "who";
@@ -563,7 +623,7 @@
     // ---------- Sheet ----------
     function openSheet(entry = null) {
       editing = entry;
-      $("sheetTitle").textContent = entry ? "Edit cookie" : "Add your cookie";
+      $("sheetTitle").textContent = entry ? "Edit" : "What are you bringing?";
       $("saveBtn").textContent = entry ? "Save changes" : "Add to the list";
       $("fName").value = entry ? entry.name : "";
       $("fCookie").value = entry ? entry.cookie : "";
@@ -574,9 +634,17 @@
       $("formError").hidden = true;
       $("saveBtn").disabled = false;
       renderFormChips();
-      checkDupe();
+      setKind(entry ? kindOf(entry) : "cookie");
       $("sheet").showModal();
       if (!entry) setTimeout(() => $("fName").focus(), 50);
+    }
+
+    function setKind(k) {
+      currentKind = k;
+      for (const r of document.querySelectorAll('#kindSeg input')) r.checked = r.value === k;
+      $("itemLabel").textContent = KINDS[k].label;
+      $("fCookie").placeholder = KINDS[k].ph;
+      checkDupe();
     }
 
     function closeSheet() { $("sheet").close(); }
@@ -593,7 +661,7 @@
 
     function checkDupe() {
       const c = norm($("fCookie").value);
-      const match = c && entries.find((e) => (!editing || e.id !== editing.id) && norm(e.cookie) === c);
+      const match = c && entries.find((e) => (!editing || e.id !== editing.id) && kindOf(e) === currentKind && norm(e.cookie) === c);
       $("dupe").hidden = !match;
       if (match) $("dupe").textContent = `Heads up: ${match.name} is already bringing ${match.cookie}. Totally fine, just so you know!`;
     }
@@ -612,12 +680,12 @@
       const name = $("fName").value.trim();
       const cookie = $("fCookie").value.trim();
       if (!name || !cookie) {
-        showError(!name ? "Please add your name." : "Please add your cookie.");
+        showError(!name ? "Please add your name." : "Please say what you're bringing.");
         (!name ? $("fName") : $("fCookie")).focus();
         return;
       }
       $("saveBtn").disabled = true;
-      const row = { name, cookie, allergens: selected };
+      const row = { name, cookie, kind: currentKind, allergens: selected };
       const { error } = editing
         ? await db.from(TABLE).update({ ...row, updated_at: new Date().toISOString() }).eq("id", editing.id)
         : await db.from(TABLE).insert(row);
@@ -625,7 +693,7 @@
       if (error) { showError("Couldn't save. Check your connection and try again."); return; }
       const wasEditing = !!editing;
       closeSheet();
-      toast(wasEditing ? "Saved ✓" : "You're on the list! 🍪");
+      toast(wasEditing ? "Saved ✓" : `You're on the list! ${KINDS[currentKind].emoji}`);
       load();
     }
 
@@ -665,6 +733,7 @@
     $("fCustom").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } });
     $("fName").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("fCookie").focus(); } });
     $("fCookie").addEventListener("input", checkDupe);
+    $("kindSeg").addEventListener("change", (e) => setKind(e.target.value));
     $("q").addEventListener("input", render);
     $("filterToggle").addEventListener("click", () => {
       const open = $("filterPanel").hidden;
