@@ -265,8 +265,12 @@
       background: var(--surface);
       color: var(--text);
       box-shadow: 0 -8px 40px rgba(0, 0, 0, .2);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
     dialog.sheet[open] { animation: up .22s ease-out; }
+    dialog.sheet.settling { transition: transform .22s cubic-bezier(.2, .8, .2, 1); }
+    dialog.sheet.dragging { user-select: none; }
     @keyframes up { from { transform: translateY(40px); opacity: .4; } to { transform: none; opacity: 1; } }
     dialog.sheet::backdrop { background: rgba(20, 12, 8, .45); }
     @media (min-width: 700px) {
@@ -274,7 +278,14 @@
     }
     .sheet form {
       display: grid; gap: 18px;
-      padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
+      padding: 0 20px calc(20px + env(safe-area-inset-bottom));
+    }
+    .sheet-top {
+      position: sticky; top: 0; z-index: 2;
+      margin: 0 -20px -8px; padding: 10px 20px 8px;
+      background: var(--surface);
+      display: grid; gap: 10px;
+      touch-action: none; /* the header is always a drag handle */
     }
     .grabber { width: 40px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto; }
     .sheet-head { display: flex; align-items: center; justify-content: space-between; }
@@ -318,10 +329,6 @@
       margin-top: 10px;
     }
     .homemade strong { color: var(--green); }
-    .homemade button {
-      background: none; border: 0; padding: 0; font: inherit; font-weight: 600;
-      color: var(--green); text-decoration: underline; text-underline-offset: 2px;
-    }
     .hint { color: var(--muted); font-size: 14px; font-weight: 400; margin: 0 0 10px; }
     .dupe {
       background: var(--warn-bg); color: var(--warn-text);
@@ -397,10 +404,12 @@
 
   <dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
     <form id="form" novalidate>
-      <div class="grabber" aria-hidden="true"></div>
-      <div class="sheet-head">
-        <h2 id="sheetTitle">What are you bringing?</h2>
-        <button class="x" type="button" id="closeBtn" aria-label="Close">×</button>
+      <div class="sheet-top">
+        <div class="grabber" aria-hidden="true"></div>
+        <div class="sheet-head">
+          <h2 id="sheetTitle">What are you bringing?</h2>
+          <button class="x" type="button" id="closeBtn" aria-label="Close">×</button>
+        </div>
       </div>
 
       <label class="field">Your name
@@ -416,8 +425,7 @@
         </div>
         <p class="homemade" id="homemade" hidden>
           🧑‍🍳 <strong>Homemade cookies only, please.</strong> Not baking this year? You're still welcome to join in by bringing
-          <button type="button" data-kind="drink">a drink</button> or
-          <button type="button" data-kind="other">something else</button>.
+          a drink or something else.
         </p>
       </fieldset>
 
@@ -650,6 +658,8 @@
       $("saveBtn").disabled = false;
       renderFormChips();
       setKind(entry ? kindOf(entry) : "cookie");
+      resetSheetPosition();
+      $("sheet").scrollTop = 0;
       $("sheet").showModal();
       if (!entry) setTimeout(() => $("fName").focus(), 50);
     }
@@ -663,7 +673,86 @@
       checkDupe();
     }
 
-    function closeSheet() { $("sheet").close(); }
+    // Slide the sheet down, then close it.
+    function closeSheet() {
+      const sheet = $("sheet");
+      if (!sheet.open || sheet.dataset.closing) return;
+      sheet.dataset.closing = "1";
+      sheet.classList.add("settling");
+      sheet.style.transform = "translateY(100%)";
+      setTimeout(() => sheet.close(), 220);
+    }
+
+    function resetSheetPosition() {
+      const sheet = $("sheet");
+      delete sheet.dataset.closing;
+      sheet.classList.remove("settling", "dragging");
+      sheet.style.transform = "";
+    }
+
+    // Swipe down to dismiss: from the header any time, or from anywhere once scrolled to the top.
+    function setupSheetDrag() {
+      const sheet = $("sheet");
+      let d = null;
+      sheet.addEventListener("touchstart", (e) => {
+        if (e.touches.length !== 1 || sheet.dataset.closing) return;
+        const t = e.touches[0];
+        const onHeader = !!e.target.closest(".sheet-top");
+        d = { y0: t.clientY, x0: t.clientX, last: t.clientY, lastT: e.timeStamp, v: 0, dy: 0,
+              active: false, eligible: onHeader || sheet.scrollTop <= 0 };
+      }, { passive: true });
+      sheet.addEventListener("touchmove", (e) => {
+        if (!d) return;
+        const t = e.touches[0];
+        const dy = t.clientY - d.y0, dx = t.clientX - d.x0;
+        if (!d.active) {
+          if (Math.abs(dy) < 6 && Math.abs(dx) < 6) return;
+          if (!d.eligible || dy <= 0 || Math.abs(dx) > Math.abs(dy)) { d = null; return; }
+          d.active = true;
+          sheet.classList.remove("settling");
+          sheet.classList.add("dragging");
+          if (document.activeElement && sheet.contains(document.activeElement)) document.activeElement.blur();
+        }
+        e.preventDefault();
+        const dt = Math.max(1, e.timeStamp - d.lastT);
+        d.v = (t.clientY - d.last) / dt;
+        d.last = t.clientY; d.lastT = e.timeStamp;
+        d.dy = Math.max(0, dy);
+        sheet.style.transform = `translateY(${d.dy}px)`;
+      }, { passive: false });
+      const end = () => {
+        if (!d) return;
+        const { active, dy, v } = d;
+        d = null;
+        if (!active) return;
+        sheet.classList.remove("dragging");
+        if (dy > Math.min(140, sheet.offsetHeight * 0.25) || v > 0.5) {
+          closeSheet();
+        } else {
+          sheet.classList.add("settling");
+          sheet.style.transform = "";
+        }
+      };
+      sheet.addEventListener("touchend", end);
+      sheet.addEventListener("touchcancel", end);
+
+      // Tap outside (on the dimmed backdrop) to close. Uses pointer events because
+      // iOS Safari doesn't reliably fire click on the dialog backdrop.
+      let downOutside = false;
+      const outside = (e) => {
+        const r = sheet.getBoundingClientRect();
+        return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      };
+      sheet.addEventListener("pointerdown", (e) => { downOutside = e.target === sheet && outside(e); });
+      sheet.addEventListener("pointerup", (e) => {
+        if (downOutside && e.target === sheet && outside(e)) closeSheet();
+        downOutside = false;
+      });
+
+      // Escape key: animate instead of snapping shut.
+      sheet.addEventListener("cancel", (e) => { e.preventDefault(); closeSheet(); });
+      sheet.addEventListener("close", resetSheetPosition);
+    }
 
     function addCustom() {
       const v = $("fCustom").value.trim().replace(/\s+/g, " ").slice(0, 40);
@@ -742,7 +831,7 @@
     // ---------- Wiring ----------
     $("addBtn").addEventListener("click", () => openSheet());
     $("closeBtn").addEventListener("click", closeSheet);
-    $("sheet").addEventListener("click", (e) => { if (e.target === $("sheet")) closeSheet(); });
+    setupSheetDrag();
     $("form").addEventListener("submit", save);
     $("deleteBtn").addEventListener("click", del);
     $("addCustom").addEventListener("click", addCustom);
@@ -750,10 +839,6 @@
     $("fName").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("fCookie").focus(); } });
     $("fCookie").addEventListener("input", checkDupe);
     $("kindSeg").addEventListener("change", (e) => setKind(e.target.value));
-    $("homemade").addEventListener("click", (e) => {
-      const k = e.target.closest("button")?.dataset.kind;
-      if (k) { setKind(k); $("fCookie").focus(); }
-    });
     $("q").addEventListener("input", render);
     $("filterToggle").addEventListener("click", () => {
       const open = $("filterPanel").hidden;
