@@ -17,7 +17,7 @@ A tiny, phone-friendly page for tracking who's bringing which cookie, drink or o
 ## Changing things
 
 - **Allergen choices:** edit the `ALLERGENS` list near the top of the `<script>` in `index.html`.
-  People can also add their own using the "Something else?" field.
+  People can also type in their own under the chips.
 - **Title:** search `index.html` for `Cookie Exchange`.
 - **Item types:** the `KINDS` list in `index.html` (cookie, drink, other). Adding a new type also needs the `kind` check constraint on the table updated.
 
